@@ -1,38 +1,39 @@
-import React, {Component } from 'react';
-import './App.css';
+import React from 'react';
 
-const API = 'http://hn.algolia.com/api/v1/search?query=';
-const DEFAULT_QUERY = 'redux';
+//const API = 'https://api.github.com/users/elChristian760';
 
+class App extends React.Component{
+  
+  state ={
+    loading: true,
+    person: null,
+  };
 
-class App extends Component {
-  constructor(props){
-    super(props);
-
-    this.state = {
-     hits: [],
-    };
+  async componentDidMount(){
+    const url = "https://randomuser.me/api";
+    const response = await fetch(url);
+    const data = await response.json();
+    this.setState({person: data.results[0], loading: false })
   }
-  componentDidMount(){
-    fetch(API + DEFAULT_QUERY)
-    .then(response => response.json())
-    .then(data => this.setState({ hits: data.hits}));
 
-  }
-  render(){
-    const { hits, isLoading }= this.state;
-
-    return(
-      <ul>
-        {hits.map(hit => 
-          <li key={hit.objectID}>
-            <a href={hit.url}>{hit.title}</a>
-          </li>
+  render() {
+    return (
+      <div className="App">
+        {this.state.loading || !this.state.person ? (
+          <div>Loading...</div> 
+        ) : (
+            <div>
+              <div>{this.state.person.name.title}</div>
+              <div>{this.state.person.name.first}</div>
+              <div>{this.state.person.name.last}</div>
+              <div>{this.state.person.gender}</div>
+              <div>{this.state.person.location.city}</div>
+              <img src={this.state.person.picture.large} alt={this.state.person.name.title} />
+            </div>
         )}
-      </ul>
+      </div>
     )
   }
-
 }
 
 export default App;
